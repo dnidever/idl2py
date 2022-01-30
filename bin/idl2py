@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+#
+# Script to run idl2py
+
+import os
+from argparse import ArgumentParser
+from idl2py import idl2py
+
+# Main command-line program
+if __name__ == "__main__":
+    parser = ArgumentParser(description='Run Doppler fitting on spectra')
+    parser.add_argument('files', type=str, nargs='+', help='IDL programs to convert')
+    args = parser.parse_args()
+
+    idl2py.convert(args.files)

@@ -1,0 +1,53 @@
+# function/program definitions
+s/function /def /g
+s/pro /def /g
+# comments
+s/;;/#/
+s/;/#/
+# Logical
+s/ ne / != /g
+s/ eq / == /g
+s/ gt / > /g
+s/ ge / >= /g
+s/ lt / < /g
+s/ le / <= /g
+# if else
+s/endif else begin/else:/g
+# strtrim
+s/strtrim(/str(/g
+# print
+s/print,/print(/g
+# loops
+s/ do begin/:/g
+s/ then begin/:/g
+s/ then /:/g
+s/ do/:/g
+# remove ending statements
+s/endif//g
+s/endwhile//g
+s/endelse//g
+s/endfor//g
+s/end//g
+# n_elements
+s/n_elements(/len(/g
+# numpy
+s/mean(/np.mean(/g
+s/median(/np.median(/g
+s/total(/np.sum(/g
+s/stdev(/np.std(/g
+# array indexing
+s/\[\*/\[:/
+s/\*\]/:\]/
+# power, ^
+s/\^/**/
+# file commands
+s/file_test,/os.path.exists(/g
+s/file_delete,/os.remove(/g
+s/file_dirname(/os.path.dirname(/g
+s/file_basename(/os.path.basename(/g
+# time
+s/systime(1)/time.time()/g
+# fits
+s/fits_read,/fits.getdata(/g
+
+# flag I at the end is supposed to be case sensitive, but the unix version doesn't seem to have it.
