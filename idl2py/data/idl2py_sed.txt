@@ -1,53 +1,53 @@
 # function/program definitions
-s/function /def /g
-s/pro /def /g
+/function /def /
+/pro /def /
 # comments
-s/;;/#/
-s/;/#/
+/;;/#/
+/;/#/
 # Logical
-s/ ne / != /g
-s/ eq / == /g
-s/ gt / > /g
-s/ ge / >= /g
-s/ lt / < /g
-s/ le / <= /g
+/ ne / != /
+/ eq / == /
+/ gt / > /
+/ ge / >= /
+/ lt / < /
+/ le / <= /
 # if else
-s/endif else begin/else:/g
+/endif else begin/else:/
 # strtrim
-s/strtrim(/str(/g
+/strtrim(/str(/
 # print
-s/print,/print(/g
+/print,/print(/
 # loops
-s/ do begin/:/g
-s/ then begin/:/g
-s/ then /:/g
-s/ do/:/g
+/ do begin/:/
+/ then begin/:/
+/ then /:/
+/ do/:/
 # remove ending statements
-s/endif//g
-s/endwhile//g
-s/endelse//g
-s/endfor//g
-s/end//g
+/endif//
+/endwhile//
+/endelse//
+/endfor//
+/end//
 # n_elements
-s/n_elements(/len(/g
+/n_elements(/len(/
 # numpy
-s/mean(/np.mean(/g
-s/median(/np.median(/g
-s/total(/np.sum(/g
-s/stdev(/np.std(/g
+/mean(/np.mean(/
+/median(/np.median(/
+/total(/np.sum(/
+/stdev(/np.std(/
 # array indexing
-s/\[\*/\[:/
-s/\*\]/:\]/
+/\[\*/\[:/
+/\*\]/:\]/
 # power, ^
-s/\^/**/
+/\^/**/
 # file commands
-s/file_test,/os.path.exists(/g
-s/file_delete,/os.remove(/g
-s/file_dirname(/os.path.dirname(/g
-s/file_basename(/os.path.basename(/g
+/file_test,/os.path.exists(/
+/file_delete,/os.remove(/
+/file_dirname(/os.path.dirname(/
+/file_basename(/os.path.basename(/
 # time
-s/systime(1)/time.time()/g
+/systime(1)/time.time()/
 # fits
-s/fits_read,/fits.getdata(/g
+/fits_read,/fits.getdata(/
 
 # flag I at the end is supposed to be case sensitive, but the unix version doesn't seem to have it.
