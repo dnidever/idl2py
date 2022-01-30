@@ -14,7 +14,7 @@
 # if else
 /endif else begin/else:/
 # strtrim
-/strtrim(/str(/
+/strtrim\(/str(/
 # print
 /print,/print(/
 # loops
@@ -29,25 +29,27 @@
 /endfor//
 /end//
 # n_elements
-/n_elements(/len(/
+/n_elements\(/len(/
 # numpy
-/mean(/np.mean(/
-/median(/np.median(/
-/total(/np.sum(/
-/stdev(/np.std(/
+/mean\(/np.mean(/
+/median\(/np.median(/
+/total\(/np.sum(/
+/stdev\(/np.std(/
 # array indexing
-/\[\*/\[:/
-/\*\]/:\]/
+/\[\*/[:/
+/\*\]/:]/
 # power, ^
 /\^/**/
 # file commands
 /file_test,/os.path.exists(/
 /file_delete,/os.remove(/
-/file_dirname(/os.path.dirname(/
-/file_basename(/os.path.basename(/
+/file_dirname\(/os.path.dirname(/
+/file_basename\(/os.path.basename(/
 # time
-/systime(1)/time.time()/
+/systime\(1\)/time.time()/
 # fits
 /fits_read,/fits.getdata(/
-
-# flag I at the end is supposed to be case sensitive, but the unix version doesn't seem to have it.
+# float, int
+/long\(/int(/
+/uint\(/np.uint(/
+/round\(/int(np.round(/

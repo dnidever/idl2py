@@ -23,7 +23,7 @@ def readfile(filename):
 def writefile(filename,lines):
     # Load the file
     with open(filename,'w') as f:
-        f.writelines()
+        f.writelines(lines)
 
 def sed_inplace(filename, pattern, repl):
     '''
@@ -55,7 +55,7 @@ def sed(pattern,repl,line):
     #pattern_compiled = re.compile(pattern)
     #newline = pattern_compiled.sub(repl, line)
     
-    newline = re.sub(pattern,repl, line)
+    newline = re.sub(pattern,repl, line, flags=re.IGNORECASE)
     
     return newline
     
@@ -84,29 +84,38 @@ def convert(filename):
         if len(dum)==4:
             pattern.append(dum[1])
             repl.append(dum[2])        
-    
+    # escape special characeters, (, ), [, ], *
+    #for p,r in zip(pattern,repl):     
+    #    print(p,r)
+
+    #import pdb; pdb.set_trace()
+            
     # Do the search/replace
-    for i in range(len(replace)):
+    for i in range(len(pattern)):
         print(i,pattern[i],repl[i])
         line = sed(pattern[i],repl[i],line)
     
     # Add import statements at the beginning
+    beg = '#!/usr/bin/env python\n\n'
+    beg += 'import os\nimport time\nimport numpy as np\n\n'
+    line = beg+line
     
     # continue line $
     # comment blocks at beginning of program
     # stop
-
+    # for statements
+    # file_delete, check for /allow
+    # strtrim, remove ,2) as well
+    
 
     # Write to new file
     fdir = os.path.dirname(filename)
+    if fdir=='': fdir='.'
     base = os.path.basename(filename)
     if base[-4:]=='.pro':
         newbase = base[0:-4]+'.py'
     else:
         newbase = base+'.py'
     newfile = fdir+'/'+newbase
-    import pdb; pdb.set_trace()    
     writefile(newfile,line)
         
-    
-    import pdb; pdb.set_trace()
