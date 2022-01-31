@@ -53,3 +53,7 @@
 /long\(/int(/
 /uint\(/np.uint(/
 /round\(/int(np.round(/
+# stop
+/stop/import pdb; pdb.set_trace()/
+# return
+/return,/return /
