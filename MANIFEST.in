@@ -1,0 +1,4 @@
+include README.rst
+include idl2py/data/*
+
+prune build
