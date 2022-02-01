@@ -15,6 +15,13 @@ To install the latest version::
 
     pip install git+https://github.com/dnidever/idl2py
 
+Documentation
+-------------
+
+.. image:: https://readthedocs.org/projects/idl2py/badge/?version=latest
+        :target: http://idl2py.readthedocs.io/
+
+    
 License
 -------
 
