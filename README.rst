@@ -21,6 +21,9 @@ Documentation
 .. image:: https://readthedocs.org/projects/idl2py/badge/?version=latest
         :target: http://idl2py.readthedocs.io/
 
+See `the documentation <http://idl2py.readthedocs.io>`_ for information on how
+to install and use *idl2py*.
+		 
     
 License
 -------
