@@ -295,10 +295,18 @@ def convert(filename):
     line = beg+line
 
     # Other things to add:
-    # -0comment blocks at beginning of program
+    # -comment blocks at beginning of program
     # -file_delete, check for /allow
     # -strtrim, remove ,2) as well
-
+    # -mean/total with /nan, convert to np.nanmean,np.nansum, etc.
+    # -fits_read, mrdfits
+    # -sxpar, sxaddpar, sxdelpar
+    # -parentheses and : in pro/function line
+    # -closing ) at end of print statements
+    # -keyword_set
+    # -np.where(), number of returned indices
+    # -sort, reverse, uniq
+    # -file_copy
 
     # Write to new file
     fdir = os.path.dirname(filename)

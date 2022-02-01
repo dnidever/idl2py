@@ -41,7 +41,7 @@
 # power, ^
 /\^/**/
 # file commands
-/file_test,/os.path.exists(/
+/file_test\(/os.path.exists(/
 /file_delete,/os.remove(/
 /file_dirname\(/os.path.dirname(/
 /file_basename\(/os.path.basename(/
@@ -57,3 +57,10 @@
 /stop/import pdb; pdb.set_trace()/
 # return
 /return,/return /
+# sort, reverse, uniq
+/sort\(/np.argsort(/
+/reverse\(/np.flip(/
+/uniq\(/np.uniq(/
+# where
+/=where\(/, = np.where(/
+/= where\(/, = np.where(/
