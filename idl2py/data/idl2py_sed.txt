@@ -2,8 +2,8 @@
 /function /def /
 /pro /def /
 # comments
-/;;/#/
-/;/#/
+#/;;/#/
+#/;/#/
 # Logical
 / ne / != /
 / eq / == /

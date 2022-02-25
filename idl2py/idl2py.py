@@ -55,24 +55,69 @@ def sed(pattern,repl,line):
     # For efficiency, precompile the passed regular expression.
     #pattern_compiled = re.compile(pattern)
     #newline = pattern_compiled.sub(repl, line)
-    
+
     newline = re.sub(pattern,repl, line, flags=re.IGNORECASE)
-    
+
     return newline
 
+def searchreplace(pattern,repl,lines,verbose=False):
+    # Do the search+replace
+
+    newlines = []
+    for i,line in enumerate(lines):
+        oline = line
+        # Remove comment first
+        if '#' in line:
+            comment = line[line.find('#'):]
+            line = line[0:line.find('#')]
+        else:
+            comment = None
+        # Do the search/replace with sed
+        for j in range(len(pattern)):
+            line = sed(pattern[j],repl[j],line)
+        # Add comment line back
+        if comment is not None:
+            line += comment
+        # Do not add lines that had something and now don't
+        # e.g. endfor line
+        if len(oline.strip())>0 and len(line.strip())==0:
+            continue
+        else:
+            newlines.append(line)
+        if verbose:
+            print(i+1,oline,'  ->  ',line)
+
+    return newlines
+            
+def fixcomments(lines):
+    # Fix comments in lines
+    newlines = []
+    for i,l in enumerate(lines):
+        if ';;' in l:
+            comment = l[l.find(';;')+2:]
+            newl = [l[0:l.find(';;')]+'#'+comment]
+        elif ';' in l:
+            comment = l[l.find(';')+1:]
+            newl = [l[0:l.find(';')]+'#'+comment]            
+        else:
+            newl = [l]
+        newlines += newl
+
+    return newlines
+        
 def fixifthen(lines):
     # Fix if/then/else on the same line
     newlines = []
     for i,l in enumerate(lines):
-        ll = l.lower().strip()
+        ol = l  # original
         # strip off comments at end
-        if ';' in ll:
-            comment = ll[ll.find(';'):]
-            comment = comment.replace(';','')  # replace any remaining ;
-            ll = ll[0:ll.find(';')]
-            ll = ll.strip()  # remove extra whitespace
+        if '#' in l:
+            comment = l[l.find('#'):]
+            l = l[0:l.find('#')]
+            l = l.strip()    # remove extra whitespace
         else:
             comment = None
+        ll = l.lower().strip()            
         words = ll.split(' ')
         nif = np.sum(np.array(words)=='if')
         nthen = np.sum(np.array(words)=='then')
@@ -141,15 +186,15 @@ def fixfordo(lines):
     # Fix for/do on the same line
     newlines = []
     for i,l in enumerate(lines):
-        ll = l.lower().strip()
+        ol = l
         # strip off comments at end
-        if ';' in ll:
-            comment = ll[ll.find(';'):]
-            comment = comment.replace(';','')  # replace any remaining ;
-            ll = ll[0:ll.find(';')]
-            ll = ll.strip()  # remove extra whitespace
+        if '#' in l:
+            comment = l[l.find('#'):]
+            l = l[0:l.find('#')]
+            l = l.strip()  # remove extra whitespace
         else:
             comment = None
+        ll = l.lower().strip()
         words = ll.split(' ')
         nfor = np.sum(np.array(words)=='if ')
         ndo = np.sum(np.array(words)=='do')
@@ -158,10 +203,15 @@ def fixfordo(lines):
             #print(i,'fix for/do')
             dum = re.split('do',l,flags=re.IGNORECASE)
             newl = [dum[0]+'do begin','  '+dum[1],'endfor']
-            newlines += newl
         else:
-            newlines.append(l)
+            newl = [l]
 
+        # Add coment at end
+        if comment is not None:
+            newl[0] += comment
+
+        newlines += newl            
+            
     return newlines
     
 def fixindent(lines):
@@ -176,13 +226,14 @@ def fixindent(lines):
         #print(i,level)
         up = False
         dwn = False
-        l = l.lower().strip()
+        ll = l.lower().strip()
+        l = l.strip()
         indentlevel[i] = level
         # Set the indent
         lines[i] = level*'    '+l
         # Increase indent
         for u in ['pro ','function ','if ','for ','while ','case ','else ']:
-            if (u != 'else ' and l.startswith(u)) or (u=='else ' and u in l):
+            if (u != 'else ' and ll.startswith(u)) or (u=='else ' and u in ll):
                 up = True
                 uptype.append(u)
                 level += 1
@@ -190,7 +241,7 @@ def fixindent(lines):
         # Decrease indent
         #if up==False:
         for d in ['endif','endelse','endfor','endwhile','endcase','end']:
-            if l.startswith(d):
+            if ll.startswith(d):
                 dwn = True
                 dwntype.append(d)
                 level -= 1
@@ -255,6 +306,9 @@ def convert(filename):
     lines = line.split('\n')
     ## Strip newline at end
     #lines = [l.rstrip('\n') if l.endswith('\n') else l for l in lines]
+
+    # Fix comments
+    lines = fixcomments(lines)
     
     # Fix if/then/else on same lines
     lines = fixifthen(lines)
@@ -267,13 +321,10 @@ def convert(filename):
 
     # Fix for statements
     lines = fixfor(lines)
-    
-    # Make it a single line for search/replace
-    line = ' \n'.join(lines)
-    
+
     # Load the search/replace values
     replace = readfile(datadir()+'idl2py_sed.txt')
-    # remove comment lines
+    # remove comment lines in file
     replace = [r for r in replace if r[0]!='#']
     replace = [r[0:-1] if r.endswith('\n') else r for r in replace]
     # Break the statement up into pattern and replacement
@@ -285,10 +336,11 @@ def convert(filename):
             repl.append(dum[2])        
     
     # Do the search/replace
-    for i in range(len(pattern)):
-        #print(i,pattern[i],repl[i])
-        line = sed(pattern[i],repl[i],line)
-    
+    lines = searchreplace(pattern,repl,lines)
+        
+    # Make it a single line
+    line = ' \n'.join(lines)
+            
     # Add import statements at the beginning
     beg = '#!/usr/bin/env python\n\n'
     beg += 'import os\nimport time\nimport numpy as np\n\n'
