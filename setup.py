@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 setup(name='idl2py',
-      version='1.0.1',
+      version='1.0.2',
       description='Simple IDL to Python converter',
       author='David Nidever',
       author_email='dnidever@montana.edu',
