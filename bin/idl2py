@@ -11,5 +11,8 @@ if __name__ == "__main__":
     parser = ArgumentParser(description='Run Doppler fitting on spectra')
     parser.add_argument('files', type=str, nargs='+', help='IDL programs to convert')
     args = parser.parse_args()
-
-    idl2py.convert(args.files)
+    files = args.files
+    if type(files) is list:
+        files = files[0]
+    
+    idl2py.convert(files)
