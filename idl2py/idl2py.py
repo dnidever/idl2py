@@ -199,13 +199,13 @@ def fixfordo(lines):
         nfor = np.sum(np.array(words)=='if ')
         ndo = np.sum(np.array(words)=='do')
         nbegin = np.sum(np.array(words)=='begin')
-        if ll.startswith('for') and ndo>0:
-            #print(i,'fix for/do')
+        if ll.startswith('for') and ndo>0 and nbegin==0:
+            #print(i,'fix for/do',' ',ll)
             dum = re.split('do',l,flags=re.IGNORECASE)
             newl = [dum[0]+'do begin','  '+dum[1],'endfor']
         else:
             newl = [l]
-
+            
         # Add coment at end
         if comment is not None:
             newl[0] += comment
@@ -231,6 +231,9 @@ def fixindent(lines):
         indentlevel[i] = level
         # Set the indent
         lines[i] = level*'    '+l
+        # Skip blank of commented lines
+        if len(l)==0 or l[0]=='#':
+            continue        
         # Increase indent
         for u in ['pro ','function ','if ','for ','while ','case ','else ']:
             if (u != 'else ' and ll.startswith(u)) or (u=='else ' and u in ll):
@@ -285,6 +288,28 @@ def fixfor(lines):
             
     return lines
 
+def fixending(lines):
+    """ Fix various ends."""
+
+    # remove ending statements
+    # endif
+    # endwhile
+    # endelse
+    # endfor
+    # end
+    
+    for i,l in enumerate(lines):
+        ll = l.lower().strip()
+        words = ll.split(' ')
+        if ll.startswith('end'):
+            #print('end',ll)
+            if len(words)>1:
+                lines[i] = ' '.join(words[1:])
+            else:
+                lines[i] = ''            
+    return lines
+    
+
 def convert(filename):
     """
     Convert an IDL file to Python
@@ -312,7 +337,7 @@ def convert(filename):
     
     # Fix if/then/else on same lines
     lines = fixifthen(lines)
-
+    
     # Fix for/do on same line
     lines = fixfordo(lines)
     
@@ -334,10 +359,13 @@ def convert(filename):
         if len(dum)==4:
             pattern.append(dum[1])
             repl.append(dum[2])        
-    
+
     # Do the search/replace
     lines = searchreplace(pattern,repl,lines)
-        
+
+    # Fix ending statements
+    lines = fixending(lines)
+    
     # Make it a single line
     line = ' \n'.join(lines)
             

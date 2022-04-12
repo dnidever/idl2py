@@ -27,7 +27,6 @@
 /endwhile//
 /endelse//
 /endfor//
-/end//
 # n_elements
 /n_elements\(/len(/
 # numpy
