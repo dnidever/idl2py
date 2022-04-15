@@ -268,14 +268,11 @@ def fixfor(lines):
         if ll.startswith('for '):
             #print('for',ll)
             # for i=0,nfiles-1 do begin
-            ind0 = re.search('for ',l,flags=re.IGNORECASE)
-            ind0 = ind0.start()
-            ind1 = re.search('for ',l,flags=re.IGNORECASE)
-            ind1 = ind1.end()+1
+            ind0 = re.search('for ',l,flags=re.IGNORECASE).start()
+            ind1 = re.search('for ',l,flags=re.IGNORECASE).end()
             ind2 = l.find('=')
             ind3 = l.find(',')
-            ind4 = re.search('do ',l,flags=re.IGNORECASE)
-            ind4 = ind4.start()-1            
+            ind4 = re.search('do ',l,flags=re.IGNORECASE).start()-1
             var = l[ind1:ind2]
             start = l[ind2+1:ind3]
             stop = l[ind3+1:ind4]
